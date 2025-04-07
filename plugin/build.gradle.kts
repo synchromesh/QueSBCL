@@ -1,3 +1,5 @@
+/* build.gradle.kts 11 Mar 25 JDP QueSBCL */
+
 import com.android.build.gradle.internal.tasks.factory.dependsOn
 
 plugins {
@@ -5,17 +7,14 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
-// TODO: Update value to your plugin's name.
-val pluginName = "GDExtensionAndroidPluginTemplate"
-
-// TODO: Update value to match your plugin's package name.
-val pluginPackageName = "org.godotengine.plugin.android.gdextension.template"
+val pluginName = "QueSBCL"
+val pluginPackageName = "net.ngake.quesbcl"
 
 /**
  * Flag used to specify whether the `plugin.gdextension` config file has libraries for platforms
  * other than Android and can be used by the Godot Editor
  *
- * TODO: Update the flag value based on your plugin's configuration
+ * TODO: Set this to 'true' for GodotSBCL.
  */
 val gdextensionSupportsNonAndroidPlatforms = false
 
@@ -137,3 +136,5 @@ tasks.named<Delete>("clean").apply {
     dependsOn(cleanDemoAddons)
     dependsOn(cleanAssetsAddons)
 }
+
+/*** End of build.gradle.kts ***/

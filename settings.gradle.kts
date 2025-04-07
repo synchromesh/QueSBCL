@@ -1,3 +1,5 @@
+/* settings.gradle.kts 11 Mar 25 JDP QueSBCL */
+
 pluginManagement {
     repositories {
         google()
@@ -15,6 +17,8 @@ dependencyResolutionManagement {
     }
 }
 
-// TODO: Update project's name.
-rootProject.name = "GDExtensionAndroidPluginTemplate"
+// 11 Mar 25 JDP
+rootProject.name = "QueSBCL"
 include(":plugin")
+
+/*** End of settings.gradle.kts ***/

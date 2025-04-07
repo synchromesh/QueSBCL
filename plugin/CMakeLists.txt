@@ -1,3 +1,5 @@
+# CMakeLists.txt 11 Mar 25 JDP QueSBCL
+
 cmake_minimum_required(VERSION 3.22.1)
 
 ## Default configs
@@ -64,8 +66,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# TODO: Update cmake project's name.
-project(GDExtensionAndroidPluginTemplate LANGUAGES CXX)
+# 11 Mar 25 JDP
+project(QueSBCL LANGUAGES CXX)
 
 set(GODOT_COMPILE_FLAGS)
 set(GODOT_LINKER_FLAGS)
@@ -139,3 +141,26 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
 # Add the compile flags
 set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY COMPILE_FLAGS ${GODOT_COMPILE_FLAGS})
 set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS ${GODOT_LINKER_FLAGS})
+
+# 04 Apr 25 JDP Copy SBCL libraries to output directory.
+# Ref: https://stackoverflow.com/a/36984995/122085
+# The SBCL libraries are in QueSBCL/plugin/lib/arm64-v8a/ and
+# The current directory when the command is executed is
+# C:\Users\john\src\ngake\QueSBCL\plugin\.cxx\Debug\2q3g421n\arm64-v8a.
+file(TO_NATIVE_PATH "../../../../lib/arm64-v8a/libcore.so" sbcl_libcore)
+file(TO_NATIVE_PATH "../../../../lib/arm64-v8a/libsbcl.so" sbcl_libsbcl)
+file(TO_NATIVE_PATH "../../../../lib/arm64-v8a/libzstd.so" sbcl_libzstd)
+set(sbcl_dest "$<TARGET_FILE_DIR:${PROJECT_NAME}>")
+add_custom_command(TARGET ${PROJECT_NAME}	POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy ${sbcl_libcore} ${sbcl_dest}
+)
+
+add_custom_command(TARGET ${PROJECT_NAME}	POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy ${sbcl_libsbcl} ${sbcl_dest}
+)
+
+add_custom_command(TARGET ${PROJECT_NAME}	POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy ${sbcl_libzstd} ${sbcl_dest}
+)
+
+# End of CMakeLists.txt

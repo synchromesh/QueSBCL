@@ -1,3 +1,5 @@
+# export_plugin.gd 11 Mar 25 JDP QueSBCL
+
 @tool
 extends EditorPlugin
 
@@ -18,7 +20,7 @@ func _exit_tree():
 
 class AndroidExportPlugin extends EditorExportPlugin:
 	# TODO: Update to your plugin's name.
-	var _plugin_name = "GDExtensionAndroidPluginTemplate"
+	var _plugin_name = "QueSBCL"
 
 	func _supports_platform(platform):
 		if platform is EditorExportPlatformAndroid:
@@ -33,3 +35,5 @@ class AndroidExportPlugin extends EditorExportPlugin:
 
 	func _get_name():
 		return _plugin_name
+
+# End of export_plugin.gd
