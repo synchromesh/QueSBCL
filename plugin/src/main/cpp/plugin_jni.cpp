@@ -7,11 +7,10 @@
 #include "utils.h"
 
 #undef JNI_PACKAGE_NAME
-// TODO: Update to match plugin's package name
 #define JNI_PACKAGE_NAME net_ngake_quesbcl
 
 #undef JNI_CLASS_NAME
-#define JNI_CLASS_NAME GDExtensionAndroidPlugin
+#define JNI_CLASS_NAME QueSBCLPlugin
 
 extern "C" {
     JNIEXPORT void JNICALL JNI_METHOD(helloWorld)(JNIEnv *env, jobject) {

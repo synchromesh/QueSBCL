@@ -1,4 +1,4 @@
-/* GDExtensionAndroidPlugin.kt 11 Mar 25 JDP QueSBCL */
+/* QueSBCLPlugin.kt 11 Mar 25 JDP QueSBCL */
 
 package net.ngake.quesbcl
 
@@ -7,10 +7,10 @@ import org.godotengine.godot.Godot
 import org.godotengine.godot.plugin.GodotPlugin
 import org.godotengine.godot.plugin.UsedByGodot
 
-class GDExtensionAndroidPlugin(godot: Godot): GodotPlugin(godot) {
+class QueSBCLPlugin(godot: Godot): GodotPlugin(godot) {
 
     companion object {
-        val TAG = GDExtensionAndroidPlugin::class.java.simpleName
+        val TAG = QueSBCLPlugin::class.java.simpleName
 
         init {
             try {
@@ -34,8 +34,6 @@ class GDExtensionAndroidPlugin(godot: Godot): GodotPlugin(godot) {
      */
     @UsedByGodot
     external fun helloWorld()
-    @UsedByGodot
-    external fun hello(name: String)
 }
 
-/*** End of GDExtensionAndroidPlugin.kt ***/
+/*** End of QueSBCLPlugin.kt ***/

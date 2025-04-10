@@ -60,7 +60,8 @@ android {
 }
 
 dependencies {
-    implementation("org.godotengine:godot:4.3.0.stable")
+		// Ref: https://central.sonatype.com/artifact/org.godotengine/godot
+    implementation("org.godotengine:godot:4.4.1.stable")
 }
 
 // BUILD TASKS DEFINITION

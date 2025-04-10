@@ -9,11 +9,10 @@ signal lost_focus
 signal received_focus
 signal pose_recentered
 
-var quesbcl_plugin # : JNISingleton, at least on Quest
-
 @export var maximum_refresh_rate : int = 90
 var xr_interface : XRInterface
 var xr_is_focused : bool = false
+var quesbcl : QueSBCLInterface
 
 func _on_session_begun() -> void:
 	var current_refresh_rate = xr_interface.get_display_refresh_rate()
@@ -70,9 +69,9 @@ func setup_plugin(plugin_name):
 	var plugin
 	if Engine.has_singleton(plugin_name):
 		plugin = Engine.get_singleton(plugin_name)
-		print("main.gd:setup_plugins(): Type of Android plugin '%s' is %s." % [plugin_name, type_string(typeof(plugin))])
+		print("main.gd:setup_plugin(): Type of Android plugin '%s' is %s." % [plugin_name, type_string(typeof(plugin))])
 	else:
-		printerr("main.gd:setup_plugins(): Couldn't find plugin '%s'!" % plugin_name)
+		printerr("main.gd:setup_plugin(): Couldn't find plugin '%s'!" % plugin_name)
 
 	return plugin
 
@@ -100,12 +99,9 @@ func setup_xr():
 
 func _ready():
 	print("main.gd:_ready()")
-	quesbcl_plugin = setup_plugin("QueSBCL")
 	setup_xr()
-	if quesbcl_plugin:
-		print("main.gd:_ready(): Calling QueSBCL 'Hello World'...")
-		quesbcl_plugin.helloWorld()	
-		print("main.gd:_ready(): QueSBCL call returned.")
+	quesbcl = QueSBCLInterface.new()
+	var colour = quesbcl.helloWorld()
 	print("main.gd:_ready(): Done.")
 
 # End of main.gd
