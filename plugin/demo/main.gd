@@ -79,11 +79,12 @@ func setup_xr():
 	xr_interface = XRServer.find_interface("OpenXR")
 	if not xr_interface or not xr_interface.is_initialized():
 		printerr("main.gd:setup_xr(): OpenXR not initialized, please check your headset!")
+		await get_tree().create_timer(3.0).timeout
 		get_tree().quit()
-		
+
 	print("main.gd:setup_xr(): OpenXR instantiated successfully.")
 	var viewport : Viewport = get_viewport()
-		
+
 	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
 	viewport.use_xr = true
 	if RenderingServer.get_rendering_device():
@@ -97,11 +98,17 @@ func setup_xr():
 	xr_interface.session_stopping.connect(_on_session_stopping)
 	xr_interface.pose_recentered.connect(_on_pose_recentered)
 
+func set_hand_colour(colour : Color):
+	get_node("lhBox").mesh.material.albedo_color = colour
+	get_node("rhBox").mesh.material.albedo_color = colour
+
 func _ready():
 	print("main.gd:_ready()")
 	setup_xr()
 	quesbcl = QueSBCLInterface.new()
-	var colour = quesbcl.helloWorld()
+	if quesbcl.helloWorld():
+		set_hand_colour(Color.GREEN)
+	get_node("rhBox").mesh.material.albedo_color = Color.BLUE
 	print("main.gd:_ready(): Done.")
 
 # End of main.gd

@@ -21,4 +21,5 @@ func helloWorld():
 		print("QueSBCLInterface.gd:helloWorld(): QueSBCL call returned.")
 		return true
 	return false
+	
 # End of QueSBCLInterface.gd

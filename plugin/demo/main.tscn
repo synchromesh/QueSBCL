@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cg3hylang5fxn"]
+[gd_scene load_steps=10 format=3 uid="uid://cg3hylang5fxn"]
 
 [ext_resource type="Script" uid="uid://b4ukqa7o2sanu" path="res://main.gd" id="1_j0gfq"]
 [ext_resource type="PackedScene" uid="uid://btknduttnmoxf" path="res://addons/godot-xr-tools/misc/vr_common_shader_cache.tscn" id="2_0xm2m"]
@@ -15,10 +15,19 @@ background_mode = 2
 sky = SubResource("Sky_1bvp3")
 tonemap_mode = 2
 
-[sub_resource type="BoxMesh" id="BoxMesh_7mycd"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0xm2m"]
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_h2yge"]
+material = SubResource("StandardMaterial3D_0xm2m")
 size = Vector3(0.1, 0.1, 0.1)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1bvp3"]
+render_priority = -1
+albedo_color = Color(1, 0, 0, 1)
+
 [sub_resource type="BoxMesh" id="BoxMesh_272bh"]
+material = SubResource("StandardMaterial3D_1bvp3")
 size = Vector3(0.1, 0.1, 0.1)
 
 [node name="Main" type="Node3D"]
@@ -43,12 +52,12 @@ current = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 1, -0.5)
 tracker = &"left_hand"
 
-[node name="Test" type="MeshInstance3D" parent="XROrigin3D/LeftHand"]
-mesh = SubResource("BoxMesh_7mycd")
+[node name="lhBox" type="MeshInstance3D" parent="XROrigin3D/LeftHand"]
+mesh = SubResource("BoxMesh_h2yge")
 
 [node name="RightHand" type="XRController3D" parent="XROrigin3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1, -0.5)
 tracker = &"right_hand"
 
-[node name="Test" type="MeshInstance3D" parent="XROrigin3D/RightHand"]
+[node name="rhBox" type="MeshInstance3D" parent="XROrigin3D/RightHand"]
 mesh = SubResource("BoxMesh_272bh")
