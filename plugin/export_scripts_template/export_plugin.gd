@@ -1,42 +1,45 @@
 # export_plugin.gd 11 Mar 25 JDP QueSBCL
+# Ref: https://docs.godotengine.org/en/stable/tutorials/platform/android/android_plugin.html#packaging-a-v2-android-plugin
 
 @tool
 extends EditorPlugin
 
-const plugin_name = "QueSBCL"
+const plugin_name : String = "QueSBCL"
 
 # A class member to hold the editor export plugin during its lifecycle.
 var export_plugin : AndroidExportPlugin
 
-func _enter_tree():
+func _enter_tree() -> void:
 	# Initialization of the plugin goes here.
 	print("export_plugin.gd:_enter_tree()")
 	export_plugin = AndroidExportPlugin.new()
 	add_export_plugin(export_plugin)
 
-func _exit_tree():
+func _exit_tree() -> void:
 	# Clean-up of the plugin goes here.
 	print("export_plugin.gd:_exit_tree()")
 	remove_export_plugin(export_plugin)
 	export_plugin = null
 
 class AndroidExportPlugin extends EditorExportPlugin:
-	func _lib_path(name):
+	func _lib_path(name : String) -> String:
 		# This path should match the one(s) in the plugin.gdextension file.
 		return plugin_name + "/bin/extra/lib" + name + ".so"
 
-	func _supports_platform(platform):
+	func _supports_platform(platform : EditorExportPlatform) -> bool:
 		return platform is EditorExportPlatformAndroid
 
-	func _get_android_libraries(platform, debug):
+	func _get_android_libraries(platform : EditorExportPlatform, debug : bool) -> PackedStringArray:
 		var config = "debug" if debug else "release"
 		print("export_plugin.gd:_get_android_libraries(%s, %s)" % [platform, config])
 		# These paths are relative to QueSBCL/plugin/demo/addons/.
 		var aar_path = plugin_name + "/bin/" + config + "/" + plugin_name + "-" + config + ".aar"
+		var result = [aar_path, _lib_path("core"), _lib_path("sbcl"), _lib_path("zstd")]
+		print("export_plugin.gd:_get_android_libraries(): Returning [%s, %s, %s, %s]" % result)
 
-		return PackedStringArray([aar_path, _lib_path("core"), _lib_path("sbcl"), _lib_path("zstd")])
+		return PackedStringArray(result)
 
-	func _get_name():
+	func _get_name() -> String:
 		return plugin_name
 
 	# Other EditorExportPlugin API methods:

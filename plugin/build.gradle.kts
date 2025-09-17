@@ -20,14 +20,14 @@ val gdextensionSupportsNonAndroidPlatforms = false
 
 android {
     namespace = pluginPackageName
-    compileSdk = 33
+    compileSdk = 34
 
     buildFeatures {
         buildConfig = true
     }
 
     defaultConfig {
-        minSdk = 21
+        minSdk = 24
 
         externalNativeBuild {
             cmake {
@@ -58,10 +58,8 @@ android {
         jvmTarget = "17"
     }
 }
-
 dependencies {
-		// Ref: https://central.sonatype.com/artifact/org.godotengine/godot
-    implementation("org.godotengine:godot:4.4.1.stable")
+    compileOnly(files("../lib/godot-lib.template_release.aar"))
 }
 
 // BUILD TASKS DEFINITION

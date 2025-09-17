@@ -1,7 +1,14 @@
-[gd_scene load_steps=10 format=3 uid="uid://cg3hylang5fxn"]
+[gd_scene load_steps=20 format=3 uid="uid://cg3hylang5fxn"]
 
 [ext_resource type="Script" uid="uid://b4ukqa7o2sanu" path="res://main.gd" id="1_j0gfq"]
 [ext_resource type="PackedScene" uid="uid://btknduttnmoxf" path="res://addons/godot-xr-tools/misc/vr_common_shader_cache.tscn" id="2_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://b4kad2kuba1yn" path="res://addons/godot-xr-tools/hands/scenes/lowpoly/left_hand_low.tscn" id="3_1bvp3"]
+[ext_resource type="PackedScene" uid="uid://fiul51tsyoop" path="res://addons/godot-xr-tools/functions/function_teleport.tscn" id="4_kek77"]
+[ext_resource type="PackedScene" uid="uid://l2n30mpbkdyw" path="res://addons/godot-xr-tools/hands/scenes/lowpoly/right_hand_low.tscn" id="4_lquwl"]
+[ext_resource type="PackedScene" uid="uid://bl2nuu3qhlb5k" path="res://addons/godot-xr-tools/functions/movement_direct.tscn" id="6_4c57u"]
+[ext_resource type="PackedScene" uid="uid://b6bk2pj8vbj28" path="res://addons/godot-xr-tools/functions/movement_turn.tscn" id="7_efxa6"]
+[ext_resource type="PackedScene" uid="uid://diyu06cw06syv" path="res://addons/godot-xr-tools/player/player_body.tscn" id="8_dg77c"]
+[ext_resource type="Texture2D" uid="uid://dkaojickgyvs2" path="res://floor_1m-x-1m.png" id="9_ycdy4"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_h2yge"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -30,6 +37,16 @@ albedo_color = Color(1, 0, 0, 1)
 material = SubResource("StandardMaterial3D_1bvp3")
 size = Vector3(0.1, 0.1, 0.1)
 
+[sub_resource type="PlaneMesh" id="PlaneMesh_w48qg"]
+size = Vector2(100, 100)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vivmo"]
+albedo_texture = ExtResource("9_ycdy4")
+uv1_triplanar = true
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_2cqfq"]
+size = Vector3(100, 1, 100)
+
 [node name="Main" type="Node3D"]
 script = ExtResource("1_j0gfq")
 
@@ -55,9 +72,32 @@ tracker = &"left_hand"
 [node name="lhBox" type="MeshInstance3D" parent="XROrigin3D/LeftHand"]
 mesh = SubResource("BoxMesh_h2yge")
 
+[node name="LeftHand" parent="XROrigin3D/LeftHand" instance=ExtResource("3_1bvp3")]
+
+[node name="FunctionTeleport" parent="XROrigin3D/LeftHand" instance=ExtResource("4_kek77")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.6646595, 2.9491682, -3.428936)
+
 [node name="RightHand" type="XRController3D" parent="XROrigin3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1, -0.5)
 tracker = &"right_hand"
 
 [node name="rhBox" type="MeshInstance3D" parent="XROrigin3D/RightHand"]
 mesh = SubResource("BoxMesh_272bh")
+
+[node name="RightHand" parent="XROrigin3D/RightHand" instance=ExtResource("4_lquwl")]
+
+[node name="MovementDirect" parent="XROrigin3D/RightHand" instance=ExtResource("6_4c57u")]
+
+[node name="MovementTurn" parent="XROrigin3D/RightHand" instance=ExtResource("7_efxa6")]
+
+[node name="PlayerBody" parent="XROrigin3D" instance=ExtResource("8_dg77c")]
+
+[node name="Floor" type="StaticBody3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor"]
+mesh = SubResource("PlaneMesh_w48qg")
+surface_material_override/0 = SubResource("StandardMaterial3D_vivmo")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+shape = SubResource("BoxShape3D_2cqfq")

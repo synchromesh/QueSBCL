@@ -5,6 +5,7 @@ package net.ngake.quesbcl
 import android.util.Log
 import org.godotengine.godot.Godot
 import org.godotengine.godot.plugin.GodotPlugin
+import org.godotengine.godot.plugin.SignalInfo
 import org.godotengine.godot.plugin.UsedByGodot
 
 class QueSBCLPlugin(godot: Godot): GodotPlugin(godot) {
@@ -34,6 +35,23 @@ class QueSBCLPlugin(godot: Godot): GodotPlugin(godot) {
      */
     @UsedByGodot
     external fun helloWorld()
+
+    /**
+     * Ref: https://youtu.be/NWxA8Dx_6eo
+     */
+    override fun getPluginSignals(): Set<SignalInfo?> {
+        val signals: MutableSet<SignalInfo> = mutableSetOf()
+        signals.add(SignalInfo("testSignal", String::class.java))
+
+        return signals
+    }
+
+    @UsedByGodot
+    private fun helloWorldSignal(name: String) {
+        runOnUiThread {
+            emitSignal("testSignal", "Hello $name")
+        }
+    }
 }
 
 /*** End of QueSBCLPlugin.kt ***/

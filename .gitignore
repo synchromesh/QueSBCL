@@ -31,3 +31,8 @@ google-services.json
 
 # Android Profiling
 *.hprof
+
+# External libraries
+lib/
+
+# End of .gitignore

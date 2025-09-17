@@ -65,17 +65,21 @@ func _on_pose_recentered() -> void:
 	print("main.gd:_on_pose_recentered(): User has recentred their view.")
 	emit_signal("pose_recentered")
 
-func setup_plugin(plugin_name):
+func _on_testSignal(message : String) -> void:
+	print("main.gd:_on_testSignal(): Received '%s'." % message)
+
+func setup_plugin(plugin_name : String) -> Object:
 	var plugin
 	if Engine.has_singleton(plugin_name):
 		plugin = Engine.get_singleton(plugin_name)
 		print("main.gd:setup_plugin(): Type of Android plugin '%s' is %s." % [plugin_name, type_string(typeof(plugin))])
+		plugin.connect("testSignal", "_on_testSignal")
 	else:
 		printerr("main.gd:setup_plugin(): Couldn't find plugin '%s'!" % plugin_name)
 
 	return plugin
 
-func setup_xr():
+func setup_xr() -> void:
 	xr_interface = XRServer.find_interface("OpenXR")
 	if not xr_interface or not xr_interface.is_initialized():
 		printerr("main.gd:setup_xr(): OpenXR not initialized, please check your headset!")
@@ -98,17 +102,24 @@ func setup_xr():
 	xr_interface.session_stopping.connect(_on_session_stopping)
 	xr_interface.pose_recentered.connect(_on_pose_recentered)
 
-func set_hand_colour(colour : Color):
-	get_node("lhBox").mesh.material.albedo_color = colour
-	get_node("rhBox").mesh.material.albedo_color = colour
+func set_node_colour(nodeName : String, colour : Color) -> void:
+	var node = get_node(nodeName)
+	if node:
+		node.mesh.material.albedo_color = colour
+	else:
+		push_warning("main.gd:set_node_colour('%s', '%s'): Node not found.", [nodeName, colour])
 
-func _ready():
+func set_hand_colour(colour : Color) -> void:
+	set_node_colour("/Main/XROrigin3D/LeftHand", colour)
+	set_node_colour("/Main/XROrigin3D/RightHand", colour)
+
+func _ready() -> void:
 	print("main.gd:_ready()")
 	setup_xr()
 	quesbcl = QueSBCLInterface.new()
 	if quesbcl.helloWorld():
 		set_hand_colour(Color.GREEN)
-	get_node("rhBox").mesh.material.albedo_color = Color.BLUE
+	set_node_colour("/Main/XROrigin3D/RightHand", Color.BLUE)
 	print("main.gd:_ready(): Done.")
 
 # End of main.gd
