@@ -22,9 +22,9 @@ func _exit_tree() -> void:
 	export_plugin = null
 
 class AndroidExportPlugin extends EditorExportPlugin:
-	func _lib_path(name : String) -> String:
-		# This path should match the one(s) in the plugin.gdextension file.
-		return plugin_name + "/bin/extra/lib" + name + ".so"
+	#func _lib_path(name : String) -> String:
+	#	# This path should match the one(s) in the plugin.gdextension file.
+	#	return plugin_name + "/bin/extra/lib" + name + ".so"
 
 	func _supports_platform(platform : EditorExportPlatform) -> bool:
 		return platform is EditorExportPlatformAndroid
@@ -34,8 +34,10 @@ class AndroidExportPlugin extends EditorExportPlugin:
 		print("export_plugin.gd:_get_android_libraries(%s, %s)" % [platform, config])
 		# These paths are relative to QueSBCL/plugin/demo/addons/.
 		var aar_path = plugin_name + "/bin/" + config + "/" + plugin_name + "-" + config + ".aar"
-		var result = [aar_path, _lib_path("core"), _lib_path("sbcl"), _lib_path("zstd")]
-		print("export_plugin.gd:_get_android_libraries(): Returning [%s, %s, %s, %s]" % result)
+		#print("export_plugin.gd:_get_android_libraries(): Returning [%s, %s, %s, %s]" % result)
+		#var result = [aar_path, _lib_path("core"), _lib_path("sbcl"), _lib_path("zstd")]
+		var result = [aar_path]
+		print("export_plugin.gd:_get_android_libraries(): Returning [%s]" % result)
 
 		return PackedStringArray(result)
 

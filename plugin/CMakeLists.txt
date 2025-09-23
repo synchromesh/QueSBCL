@@ -2,6 +2,9 @@
 
 cmake_minimum_required(VERSION 3.22.1)
 
+# Ref: https://cliutils.gitlab.io/modern-cmake/chapters/features/debug.html
+include(CMakePrintHelpers)
+
 ## Default configs
 # Default android abi is arm64-v8a
 if (NOT ANDROID_ABI)
@@ -151,6 +154,10 @@ file(TO_NATIVE_PATH "../../../../lib/arm64-v8a/libcore.so" sbcl_libcore)
 file(TO_NATIVE_PATH "../../../../lib/arm64-v8a/libsbcl.so" sbcl_libsbcl)
 file(TO_NATIVE_PATH "../../../../lib/arm64-v8a/libzstd.so" sbcl_libzstd)
 set(sbcl_dest "$<TARGET_FILE_DIR:${PROJECT_NAME}>")
+
+# 23 Sep 25 JDP
+cmake_print_variables(sbcl_libsbcl sbcl_dest TARGET_FILE_DIR)
+
 add_custom_command(TARGET ${PROJECT_NAME}	POST_BUILD
 	COMMAND ${CMAKE_COMMAND} -E copy ${sbcl_libcore} ${sbcl_dest}
 )

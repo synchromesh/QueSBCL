@@ -20,14 +20,14 @@ val gdextensionSupportsNonAndroidPlatforms = false
 
 android {
     namespace = pluginPackageName
-    compileSdk = 34
+    compileSdk = 32
 
     buildFeatures {
         buildConfig = true
     }
 
     defaultConfig {
-        minSdk = 24
+        minSdk = 32
 
         externalNativeBuild {
             cmake {
@@ -40,13 +40,19 @@ android {
 
         manifestPlaceholders["godotPluginName"] = pluginName
         manifestPlaceholders["godotPluginPackageName"] = pluginPackageName
+        // Accessible in the Kotlin code as BuildConfig.GODOT_PLUGIN_NAME.
         buildConfigField("String", "GODOT_PLUGIN_NAME", "\"${pluginName}\"")
         setProperty("archivesBaseName", pluginName)
     }
+
+    // 17 Sep 25 JDP
+    ndkVersion = "29.0.14033849"
+
     externalNativeBuild {
         cmake {
             path("CMakeLists.txt")
-            version = "3.22.1"
+            //version = "3.22.1" - 17 Sep 25 JDP
+            version = "3.31.6"
         }
     }
 
@@ -93,13 +99,15 @@ val copyReleaseAARToDemoAddons by tasks.registering(Copy::class) {
 
 val copyDebugSharedLibs by tasks.registering(Copy::class) {
     description = "Copies the generated debug .so shared library to the plugin's addons directory"
-    from("build/intermediates/cmake/debug/obj")
+    from("build/intermediates/cmake/debug")
+    include("lib$pluginName.so")
     into("demo/addons/$pluginName/bin/debug")
 }
 
 val copyReleaseSharedLibs by tasks.registering(Copy::class) {
     description = "Copies the generated release .so shared library to the plugin's addons directory"
-    from("build/intermediates/cmake/release/obj")
+    from("build/intermediates/cmake/release")
+    include("lib$pluginName.so")
     into("demo/addons/$pluginName/bin/release")
 }
 
@@ -116,7 +124,7 @@ val copyAddonsToDemo by tasks.registering(Copy::class) {
 
     from("export_scripts_template")
     if (!gdextensionSupportsNonAndroidPlatforms) {
-        exclude("plugin.gdextension")
+        /* exclude("plugin.gdextension") - 23 Sep 25 JDP */
     } else {
         finalizedBy(copyDebugSharedLibs)
         finalizedBy(copyReleaseSharedLibs)

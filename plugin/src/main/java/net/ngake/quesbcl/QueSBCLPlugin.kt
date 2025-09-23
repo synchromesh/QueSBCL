@@ -23,6 +23,8 @@ class QueSBCLPlugin(godot: Godot): GodotPlugin(godot) {
         }
     }
 
+    private val pluginSignalInfo = SignalInfo("testSignal", String::class.java)
+
     override fun getPluginName() = BuildConfig.GODOT_PLUGIN_NAME
 
     override fun getPluginGDExtensionLibrariesPaths() = setOf("res://addons/${BuildConfig.GODOT_PLUGIN_NAME}/plugin.gdextension")
@@ -39,16 +41,17 @@ class QueSBCLPlugin(godot: Godot): GodotPlugin(godot) {
     /**
      * Ref: https://youtu.be/NWxA8Dx_6eo
      */
-    override fun getPluginSignals(): Set<SignalInfo?> {
-        val signals: MutableSet<SignalInfo> = mutableSetOf()
+    override fun getPluginSignals(): Set<SignalInfo> {
+        /*val signals: MutableSet<SignalInfo> = mutableSetOf()
         signals.add(SignalInfo("testSignal", String::class.java))
-
-        return signals
+        return signals*/
+        Log.i(TAG, "getPluginSignals(): Registering $pluginSignalInfo.")
+        return setOf(pluginSignalInfo)
     }
 
     @UsedByGodot
     private fun helloWorldSignal(name: String) {
-        runOnUiThread {
+        godot.getActivity()?.runOnUiThread {
             emitSignal("testSignal", "Hello $name")
         }
     }

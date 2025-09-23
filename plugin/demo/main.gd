@@ -73,7 +73,7 @@ func setup_plugin(plugin_name : String) -> Object:
 	if Engine.has_singleton(plugin_name):
 		plugin = Engine.get_singleton(plugin_name)
 		print("main.gd:setup_plugin(): Type of Android plugin '%s' is %s." % [plugin_name, type_string(typeof(plugin))])
-		plugin.connect("testSignal", "_on_testSignal")
+		plugin.connect("testSignal", _on_testSignal)
 	else:
 		printerr("main.gd:setup_plugin(): Couldn't find plugin '%s'!" % plugin_name)
 
@@ -105,13 +105,14 @@ func setup_xr() -> void:
 func set_node_colour(nodeName : String, colour : Color) -> void:
 	var node = get_node(nodeName)
 	if node:
-		node.mesh.material.albedo_color = colour
+		print("set_node_colour('%s', ...): %s is '%s'", [nodeName, node.class_name, node.name])
+		node.material.albedo_color = colour
 	else:
-		push_warning("main.gd:set_node_colour('%s', '%s'): Node not found.", [nodeName, colour])
+		push_warning("main.gd:set_node_colour('%s', ...): Node not found.", [nodeName])
 
 func set_hand_colour(colour : Color) -> void:
-	set_node_colour("/Main/XROrigin3D/LeftHand", colour)
-	set_node_colour("/Main/XROrigin3D/RightHand", colour)
+	set_node_colour("/Main/XROrigin3D/LeftHand/lhBox", colour)
+	set_node_colour("/Main/XROrigin3D/RightHand/rhBox", colour)
 
 func _ready() -> void:
 	print("main.gd:_ready()")
@@ -119,7 +120,8 @@ func _ready() -> void:
 	quesbcl = QueSBCLInterface.new()
 	if quesbcl.helloWorld():
 		set_hand_colour(Color.GREEN)
-	set_node_colour("/Main/XROrigin3D/RightHand", Color.BLUE)
+	quesbcl.helloWorldSignal("BOOYAH")
+	set_node_colour("/Main/XROrigin3D/RightHand/rhBox", Color.BLUE)
 	print("main.gd:_ready(): Done.")
 
 # End of main.gd
