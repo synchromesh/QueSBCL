@@ -1,6 +1,7 @@
 /* build.gradle.kts 11 Mar 25 JDP QueSBCL */
 
 import com.android.build.gradle.internal.tasks.factory.dependsOn
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("com.android.library")
@@ -60,11 +61,19 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
+    /*kotlinOptions {
         jvmTarget = "17"
+    }*/
+    // Ref: https://kotlinlang.org/docs/gradle-compiler-options.html#example-of-additional-arguments-usage-via-freecompilerargs
+    kotlin { compilerOptions { jvmTarget.set(JvmTarget.JVM_17) } }
+    buildTypes {
+        getByName("debug") {
+            isJniDebuggable = true
+        }
     }
 }
 dependencies {
+    implementation(files("lib/arm64-v8a/libsbcl.so"))
     compileOnly(files("../lib/godot-lib.template_release.aar"))
 }
 
@@ -111,6 +120,12 @@ val copyReleaseSharedLibs by tasks.registering(Copy::class) {
     into("demo/addons/$pluginName/bin/release")
 }
 
+val copyExternalLibrariesToDemoAddons by tasks.registering(Copy::class) {
+    description = "Copies SBCL libraries to the plugin's addons directory"
+    from("lib/arm64-v8a")
+    into("demo/addons/$pluginName/bin/extra")
+}
+
 val cleanDemoAddons by tasks.registering(Delete::class) {
     delete("demo/addons/$pluginName")
 }
@@ -121,6 +136,7 @@ val copyAddonsToDemo by tasks.registering(Copy::class) {
     dependsOn(cleanDemoAddons)
     finalizedBy(copyDebugAARToDemoAddons)
     finalizedBy(copyReleaseAARToDemoAddons)
+    finalizedBy(copyExternalLibrariesToDemoAddons)
 
     from("export_scripts_template")
     if (!gdextensionSupportsNonAndroidPlatforms) {
