@@ -22,8 +22,9 @@ else ()
 endif ()
 
 # Default android platform is android-21
+# 27 Sep 25 JDP We're using API level 28.
 if (NOT ANDROID_PLATFORM)
-    set(ANDROID_PLATFORM "android-21")
+    set(ANDROID_PLATFORM "android-28")
 endif (NOT ANDROID_PLATFORM)
 
 # Default build type is Debug
@@ -117,6 +118,14 @@ add_library(${GODOT-CPP}
         )
 set_target_properties(${GODOT-CPP} PROPERTIES IMPORTED_LOCATION ${GODOT_CPP_STATIC_LIB})
 
+# 27 Sep 25 JDP Ref: https://developer.android.com/studio/projects/configure-cmake
+# Add libsbcl.so
+add_library(sbcl SHARED IMPORTED)
+set_target_properties(sbcl PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/lib/arm64-v8a/libsbcl.so)
+
+# 30 Sep 25 JDP Add libzstd.so
+add_library(zstd SHARED IMPORTED)
+set_target_properties(zstd PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/lib/arm64-v8a/libzstd.so)
 
 ## Setup the plugin library
 file(GLOB_RECURSE ANDROID_SOURCES ${CMAKE_SOURCE_DIR}/src/main/cpp/*.c**)
@@ -139,6 +148,8 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
         android
         log
         ${GODOT-CPP}
+        sbcl
+        zstd
         )
 
 # Add the compile flags

@@ -6,6 +6,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    base
 }
 
 val pluginName = "QueSBCL"
@@ -27,6 +28,13 @@ android {
         buildConfig = true
     }
 
+    /* Add packaging options to exclude libcore.so from debug symbol stripping */
+    packaging {
+        jniLibs {
+            keepDebugSymbols += "**/libcore.so"
+        }
+    }
+
     defaultConfig {
         minSdk = 32
 
@@ -43,8 +51,8 @@ android {
         manifestPlaceholders["godotPluginPackageName"] = pluginPackageName
         // Accessible in the Kotlin code as BuildConfig.GODOT_PLUGIN_NAME.
         buildConfigField("String", "GODOT_PLUGIN_NAME", "\"${pluginName}\"")
-        setProperty("archivesBaseName", pluginName)
     }
+    base { archivesName.set(pluginName) }
 
     // 17 Sep 25 JDP
     ndkVersion = "29.0.14033849"
@@ -61,9 +69,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    /*kotlinOptions {
-        jvmTarget = "17"
-    }*/
     // Ref: https://kotlinlang.org/docs/gradle-compiler-options.html#example-of-additional-arguments-usage-via-freecompilerargs
     kotlin { compilerOptions { jvmTarget.set(JvmTarget.JVM_17) } }
     buildTypes {
@@ -74,6 +79,7 @@ android {
 }
 dependencies {
     implementation(files("lib/arm64-v8a/libsbcl.so"))
+    implementation(files("lib/arm64-v8a/libzstd.so"))
     compileOnly(files("../lib/godot-lib.template_release.aar"))
 }
 

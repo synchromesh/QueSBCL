@@ -23,7 +23,7 @@ sky = SubResource("Sky_1bvp3")
 tonemap_mode = 2
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0xm2m"]
-albedo_color = Color(1, 0, 0, 1)
+albedo_color = Color(1, 1, 0, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_h2yge"]
 material = SubResource("StandardMaterial3D_0xm2m")
@@ -31,7 +31,7 @@ size = Vector3(0.1, 0.1, 0.1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1bvp3"]
 render_priority = -1
-albedo_color = Color(1, 0, 0, 1)
+albedo_color = Color(1, 1, 0, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_272bh"]
 material = SubResource("StandardMaterial3D_1bvp3")
@@ -77,6 +77,10 @@ mesh = SubResource("BoxMesh_h2yge")
 [node name="FunctionTeleport" parent="XROrigin3D/LeftHand" instance=ExtResource("4_kek77")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.6646595, 2.9491682, -3.428936)
 
+[node name="lhLabel" type="Label3D" parent="XROrigin3D/LeftHand"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
+text = "lhLabel"
+
 [node name="RightHand" type="XRController3D" parent="XROrigin3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1, -0.5)
 tracker = &"right_hand"
@@ -90,6 +94,10 @@ mesh = SubResource("BoxMesh_272bh")
 
 [node name="MovementTurn" parent="XROrigin3D/RightHand" instance=ExtResource("7_efxa6")]
 
+[node name="rhLabel" type="Label3D" parent="XROrigin3D/RightHand"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
+text = "rhLabel"
+
 [node name="PlayerBody" parent="XROrigin3D" instance=ExtResource("8_dg77c")]
 
 [node name="Floor" type="StaticBody3D" parent="."]
@@ -101,3 +109,6 @@ surface_material_override/0 = SubResource("StandardMaterial3D_vivmo")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 shape = SubResource("BoxShape3D_2cqfq")
+
+[connection signal="button_pressed" from="XROrigin3D/LeftHand" to="." method="_on_left_hand_button_pressed"]
+[connection signal="button_pressed" from="XROrigin3D/RightHand" to="." method="_on_right_hand_button_pressed"]

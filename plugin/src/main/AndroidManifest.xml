@@ -4,7 +4,7 @@
     <!-- TODO Add required permissions here, e.g. -->
     <!-- <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> -->
 
-    <application>
+    <application android:extractNativeLibs="true">
         <!--
         Plugin metadata:
 

@@ -29,6 +29,10 @@ file_logging/enable_file_logging=true
 
 enabled=PackedStringArray("res://addons/QueSBCL/plugin.cfg", "res://addons/godot-xr-tools/plugin.cfg")
 
+[physics]
+
+3d/run_on_separate_thread=true
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"
@@ -81,6 +85,7 @@ META_ENVIRONMENT_DEPTH_TO_CAMERA_PROJECTION_RIGHT={
 [xr]
 
 openxr/enabled=true
+openxr/default_action_map="uid://ephducjuaep4"
 openxr/reference_space=0
 openxr/environment_blend_mode=2
 openxr/foveation_level=3
@@ -92,3 +97,4 @@ openxr/extensions/hand_tracking_controller_data_source=true
 openxr/extensions/hand_interaction_profile=true
 shaders/enabled=true
 openxr/extensions/meta/color_space/starting_color_space=3
+hybrid_app/launch_mode=1

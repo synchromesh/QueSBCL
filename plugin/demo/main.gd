@@ -14,6 +14,27 @@ var xr_interface : XRInterface
 var xr_is_focused : bool = false
 var quesbcl : QueSBCLInterface
 
+var lhCount : int = 0
+var rhCount : int = 0
+
+func hMsg(nodeName : String, msg : String, count : int) -> int:
+	var l : Label3D=get_node("/root/Main/XROrigin3D/" + nodeName) as Label3D
+
+	count = count + 1
+	l.text = "%d: %s" % [count, msg]
+
+	return count
+
+func lhMsg(msg : String) -> int:
+	lhCount = hMsg("LeftHand/lhLabel", msg, lhCount)
+
+	return lhCount
+
+func rhMsg(msg : String) -> int:
+	rhCount = hMsg("RightHand/rhLabel", msg, rhCount)
+
+	return rhCount
+
 func _on_session_begun() -> void:
 	var current_refresh_rate = xr_interface.get_display_refresh_rate()
 	if current_refresh_rate > 0:
@@ -67,12 +88,22 @@ func _on_pose_recentered() -> void:
 
 func _on_testSignal(message : String) -> void:
 	print("main.gd:_on_testSignal(): Received '%s'." % message)
+	
+func _on_left_hand_button_pressed(buttonName : String) -> void:
+	#print("main.gd:_on_left_hand_button_pressed('%s'): %d" % [buttonName, lhCount])
+	lhMsg(buttonName)
+
+func _on_right_hand_button_pressed(buttonName : String) -> void:
+	#print("main.gd:_on_right_hand_button_pressed('%s'): %d" % [buttonName, rhCount])
+	if buttonName == 'primary_click': rhMsg(buttonName)
+	if rhCount == 4: startLisp()
 
 func setup_plugin(plugin_name : String) -> Object:
-	var plugin
+	var plugin : Object
+	
 	if Engine.has_singleton(plugin_name):
 		plugin = Engine.get_singleton(plugin_name)
-		print("main.gd:setup_plugin(): Type of Android plugin '%s' is %s." % [plugin_name, type_string(typeof(plugin))])
+		#print("main.gd:setup_plugin(): Type of Android plugin '%s' is %s." % [plugin_name, type_string(typeof(plugin))])
 		plugin.connect("testSignal", _on_testSignal)
 	else:
 		printerr("main.gd:setup_plugin(): Couldn't find plugin '%s'!" % plugin_name)
@@ -102,26 +133,44 @@ func setup_xr() -> void:
 	xr_interface.session_stopping.connect(_on_session_stopping)
 	xr_interface.pose_recentered.connect(_on_pose_recentered)
 
+var nodeColourMutex : Mutex
+
 func set_node_colour(nodeName : String, colour : Color) -> void:
-	var node = get_node(nodeName)
+	var node : MeshInstance3D = get_node(nodeName) as MeshInstance3D
 	if node:
-		print("set_node_colour('%s', ...): %s is '%s'", [nodeName, node.class_name, node.name])
-		node.material.albedo_color = colour
+		#print("set_node_colour('%s', ...): %s is '%s'" % [nodeName, node.get_class(), node.name])
+		node.mesh.material.albedo_color = colour
 	else:
-		push_warning("main.gd:set_node_colour('%s', ...): Node not found.", [nodeName])
+		push_warning("main.gd:set_node_colour('%s', ...): Node not found.", nodeName)
 
 func set_hand_colour(colour : Color) -> void:
-	set_node_colour("/Main/XROrigin3D/LeftHand/lhBox", colour)
-	set_node_colour("/Main/XROrigin3D/RightHand/rhBox", colour)
+	set_node_colour("/root/Main/XROrigin3D/LeftHand/lhBox", colour)
+	set_node_colour("/root/Main/XROrigin3D/RightHand/rhBox", colour)
+
+var lispStarted : bool = false
+
+func lisp_worker():
+	print("lisp_worker: Thread starting, calling setupLisp().")
+	if quesbcl.setupLisp() == 0:
+		print("lisp_worker: setupLisp() succeeded, calling helloLisp().")
+		quesbcl.helloLisp()
+		print("lisp_worker: helloLisp() returned.")
+		set_hand_colour.call_deferred(Color.GREEN)
+	else:
+		print("lisp_worker: setupLisp() failed.")
+		set_hand_colour.call_deferred(Color.RED)
+
+func startLisp() -> void:
+	if lispStarted: return
+
+	lispStarted = true
+	WorkerThreadPool.add_task(lisp_worker, false, "SBCL worker thread function")
 
 func _ready() -> void:
 	print("main.gd:_ready()")
 	setup_xr()
 	quesbcl = QueSBCLInterface.new()
-	if quesbcl.helloWorld():
-		set_hand_colour(Color.GREEN)
-	quesbcl.helloWorldSignal("BOOYAH")
-	set_node_colour("/Main/XROrigin3D/RightHand/rhBox", Color.BLUE)
+	#quesbcl.helloWorldSignal("BOOYAH")
 	print("main.gd:_ready(): Done.")
 
 # End of main.gd
